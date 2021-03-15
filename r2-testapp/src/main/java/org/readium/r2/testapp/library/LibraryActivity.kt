@@ -228,18 +228,18 @@ class LibraryActivity : AppCompatActivity(), BooksAdapter.RecyclerViewClickListe
         startServer()
 
         permissionHelper.storagePermission {
-            if (books.isEmpty()) {
-                if (!preferences.contains("samples")) {
-                    val dir = File(R2DIRECTORY)
-                    if (!dir.exists()) {
-                        dir.mkdirs()
-                    }
-                    launch {
-                        copySamplesFromAssetsToStorage()
-                    }
-                    preferences.edit().putBoolean("samples", true).apply()
-                }
+//            if (books.isEmpty()) {
+//                if (!preferences.contains("samples")) {
+            val dir = File(R2DIRECTORY)
+            if (!dir.exists()) {
+                dir.mkdirs()
             }
+            launch {
+                copySamplesFromAssetsToStorage()
+            }
+            preferences.edit().putBoolean("samples", true).apply()
+//                }
+//            }
         }
     }
 
@@ -545,20 +545,25 @@ class LibraryActivity : AppCompatActivity(), BooksAdapter.RecyclerViewClickListe
     }
 
     private suspend fun confirmAddDuplicateBook(book: Book): Boolean = suspendCoroutine { cont ->
-        alert(Appcompat, "Publication already exists") {
-            positiveButton("Add anyway") {
-                it.dismiss()
-                cont.resume(true)
-            }
-            negativeButton("Cancel") {
-                it.dismiss()
-                cont.resume(false)
-            }
-        }.build().apply {
-            setCancelable(false)
-            setCanceledOnTouchOutside(false)
-            show()
+        if (database.books.has(book.identifier).isEmpty() && book.title.contains("33 Ways")) {
+            cont.resume(true)
+        }else {
+            cont.resume(false)
         }
+//        alert(Appcompat, "Publication already exists") {
+//            positiveButton("Add anyway") {
+//                it.dismiss()
+//                cont.resume(true)
+//            }
+//            negativeButton("Cancel") {
+//                it.dismiss()
+//                cont.resume(false)
+//            }
+//        }.build().apply {
+//            setCancelable(false)
+//            setCanceledOnTouchOutside(false)
+//            show()
+//        }
     }
 
     override fun recyclerViewListClicked(v: View, position: Int) {
