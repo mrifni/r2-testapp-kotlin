@@ -43,6 +43,7 @@ class ReaderViewModel(context: Context, arguments: ReaderContract.Input) : ViewM
     }
 
     fun saveProgression(locator: String) = viewModelScope.launch {
+        println("saveProgression $locator")
         repository.saveProgression(locator, bookId)
     }
 
