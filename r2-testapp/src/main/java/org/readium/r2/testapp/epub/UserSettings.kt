@@ -42,11 +42,11 @@ class UserSettings(var preferences: SharedPreferences, val context: Context, pri
     private var fontSize = 100f
     private var fontOverride = false
     private var fontFamily = 0
-    private var appearance = 0
+    private var appearance = 1
     private var verticalScroll = false
 
     //Advanced settings
-    private var publisherDefaults = false
+    private var publisherDefaults = true
     private var textAlignment = 0
     private var columnCount = 0
     private var wordSpacing = 0f
@@ -80,6 +80,11 @@ class UserSettings(var preferences: SharedPreferences, val context: Context, pri
         val layoutParams = (context as AppCompatActivity).window.attributes
         layoutParams.screenBrightness = backLightValue
         context.window.attributes = layoutParams
+
+        // create the default settings.
+        if (!userPropertiesFile().exists()) {
+            saveChanges()
+        }
     }
 
     private fun getUserSettings(): UserProperties {
@@ -121,12 +126,15 @@ class UserSettings(var preferences: SharedPreferences, val context: Context, pri
         return array
     }
 
+    fun userPropertiesFile(): File {
+        val dir = File(context.filesDir.path + "/" + Injectable.Style.rawValue + "/")
+        dir.mkdirs()
+        return File(dir, "UserProperties.json")
+    }
 
     fun saveChanges() {
         val json = makeJson()
-        val dir = File(context.filesDir.path + "/" + Injectable.Style.rawValue + "/")
-        dir.mkdirs()
-        val file = File(dir, "UserProperties.json")
+        val file = userPropertiesFile()
         file.printWriter().use { out ->
             out.println(json)
         }
