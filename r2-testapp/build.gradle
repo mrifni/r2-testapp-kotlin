@@ -85,31 +85,36 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    final READIUM_VERSION = 'develop-SNAPSHOT'
+    final READIUM_VERSION = '2.0.0'
     if (findProject(':r2-shared')) {
         implementation project(':r2-shared')
     } else {
-        implementation "com.github.readium:r2-shared-kotlin:$READIUM_VERSION"
+//        implementation "com.github.readium:r2-shared-kotlin:$READIUM_VERSION"
+        implementation "com.github.readium:r2-shared:$READIUM_VERSION"
     }
     if (findProject(':r2-navigator')) {
         implementation project(':r2-navigator')
     } else {
-        implementation "com.github.readium:r2-navigator-kotlin:$READIUM_VERSION"
+//        implementation "com.github.readium:r2-navigator-kotlin:$READIUM_VERSION"
+        implementation "com.github.readium:r2-navigator:$READIUM_VERSION"
     }
     if (findProject(':r2-streamer')) {
         implementation project(':r2-streamer')
     } else {
-        implementation "com.github.readium:r2-streamer-kotlin:$READIUM_VERSION"
+//        implementation "com.github.readium:r2-streamer-kotlin:$READIUM_VERSION"
+        implementation "com.github.readium:r2-streamer:$READIUM_VERSION"
     }
     if (findProject(':r2-opds')) {
         implementation project(':r2-opds')
     } else {
-        implementation "com.github.readium:r2-opds-kotlin:$READIUM_VERSION"
+//        implementation "com.github.readium:r2-opds-kotlin:$READIUM_VERSION"
+        implementation "com.github.readium:r2-opds:$READIUM_VERSION"
     }
     if (findProject(':r2-lcp')) {
         implementation project(':r2-lcp')
     } else {
-        implementation "com.github.readium:r2-lcp-kotlin:$READIUM_VERSION"
+//        implementation "com.github.readium:r2-lcp-kotlin:$READIUM_VERSION"
+        implementation "com.github.readium:r2-lcp:$READIUM_VERSION"
     }
 
     implementation 'androidx.core:core-ktx:1.5.0'
