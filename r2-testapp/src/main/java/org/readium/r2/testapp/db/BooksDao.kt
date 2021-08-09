@@ -61,7 +61,7 @@ interface BooksDao {
      * Retrieves the highlight with the given ID.
      */
     @Query("SELECT * FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.ID} = :highlightId")
-    suspend fun getHighlightById(highlightId: Long): Highlight?
+    suspend fun getHighlightById(highlightId: String): Highlight?
 
     /**
      * Inserts a bookmark
@@ -83,13 +83,13 @@ interface BooksDao {
      * Updates a highlight's annotation.
      */
     @Query("UPDATE ${Highlight.TABLE_NAME} SET ${Highlight.ANNOTATION} = :annotation WHERE ${Highlight.ID} = :id")
-    suspend fun updateHighlightAnnotation(id: Long, annotation: String)
+    suspend fun updateHighlightAnnotation(id: String, annotation: String)
 
     /**
      * Updates a highlight's tint and style.
      */
     @Query("UPDATE ${Highlight.TABLE_NAME} SET ${Highlight.TINT} = :tint, ${Highlight.STYLE} = :style WHERE ${Highlight.ID} = :id")
-    suspend fun updateHighlightStyle(id: Long, style: Highlight.Style, @ColorInt tint: Int)
+    suspend fun updateHighlightStyle(id: String, style: Highlight.Style, @ColorInt tint: Int)
 
     /**
      * Deletes a bookmark
@@ -101,7 +101,7 @@ interface BooksDao {
      * Deletes the highlight with given id.
      */
     @Query("DELETE FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.ID} = :id")
-    suspend fun deleteHighlight(id: Long)
+    suspend fun deleteHighlight(id: String)
 
     /**
      * Saves book progression

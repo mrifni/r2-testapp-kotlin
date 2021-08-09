@@ -32,9 +32,9 @@ import org.readium.r2.shared.util.MapWithDefaultCompanion
     ],
 )
 data class Highlight(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = ID)
-    var id: Long = 0,
+    var id: String = "",
     @ColumnInfo(name = CREATION_DATE, defaultValue = "CURRENT_TIMESTAMP")
     var creation: Long? = null,
     @ColumnInfo(name = BOOK_ID)

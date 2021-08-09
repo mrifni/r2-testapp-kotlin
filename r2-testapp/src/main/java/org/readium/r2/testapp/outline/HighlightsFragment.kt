@@ -61,16 +61,23 @@ class HighlightsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        highlightAdapter = HighlightAdapter(publication, onDeleteHighlightRequested = { highlight -> viewModel.deleteHighlight(highlight.id) }, onHighlightSelectedRequested = { highlight -> onHighlightSelected(highlight) })
+        highlightAdapter = HighlightAdapter(publication, onDeleteHighlightRequested = { highlight ->
+            viewModel.deleteHighlight(highlight.id)
+            highlightAdapter.notifyDataSetChanged()
+        }, onHighlightSelectedRequested = { highlight -> onHighlightSelected(highlight) })
         binding.listView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = highlightAdapter
         }
 
-        viewModel.highlights
+        viewModel.getHighlights()
             .onEach { highlightAdapter.submitList(it) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+//
+//        viewModel.getHighlights().observe(viewLifecycleOwner, {
+//            highlightAdapter.submitList(it)
+//        })
     }
 
     override fun onDestroyView() {
@@ -80,24 +87,26 @@ class HighlightsFragment : Fragment() {
 
     private fun onHighlightSelected(highlight: Highlight) {
         setFragmentResult(
-                OutlineContract.REQUEST_KEY,
-                OutlineContract.createResult(highlight.locator)
+            OutlineContract.REQUEST_KEY,
+            OutlineContract.createResult(highlight.locator)
         )
     }
 }
 
-class HighlightAdapter(private val publication: Publication,
-                       private val onDeleteHighlightRequested: (Highlight) -> Unit,
-                       private val onHighlightSelectedRequested: (Highlight) -> Unit) :
-        ListAdapter<Highlight, HighlightAdapter.ViewHolder>(HighlightsDiff()) {
+class HighlightAdapter(
+    private val publication: Publication,
+    private val onDeleteHighlightRequested: (Highlight) -> Unit,
+    private val onHighlightSelectedRequested: (Highlight) -> Unit
+) :
+    ListAdapter<Highlight, HighlightAdapter.ViewHolder>(HighlightsDiff()) {
 
     init {
         setHasStableIds(true)
     }
 
     override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
+        parent: ViewGroup,
+        viewType: Int
     ): ViewHolder {
         return ViewHolder(
             ItemRecycleHighlightBinding.inflate(
@@ -113,19 +122,22 @@ class HighlightAdapter(private val publication: Publication,
         holder.bind(item)
     }
 
-    inner class ViewHolder(val binding: ItemRecycleHighlightBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemRecycleHighlightBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(highlight: Highlight) {
             binding.highlightChapter.text = highlight.title
             binding.highlightText.text = highlight.locator.text.highlight
             binding.annotation.text = highlight.annotation
 
-            val formattedDate = DateTime(highlight.creation).toString(DateTimeFormat.shortDateTime())
+            val formattedDate =
+                DateTime(highlight.creation).toString(DateTimeFormat.shortDateTime())
             binding.highlightTimeStamp.text = formattedDate
 
             binding.highlightOverflow.setOnClickListener {
 
-                val popupMenu = PopupMenu(binding.highlightOverflow.context, binding.highlightOverflow)
+                val popupMenu =
+                    PopupMenu(binding.highlightOverflow.context, binding.highlightOverflow)
                 popupMenu.menuInflater.inflate(R.menu.menu_bookmark, popupMenu.menu)
                 popupMenu.show()
 

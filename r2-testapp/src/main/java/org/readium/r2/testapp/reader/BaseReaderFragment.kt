@@ -77,9 +77,14 @@ abstract class BaseReaderFragment : Fragment() {
         (navigator as? DecorableNavigator)?.let { navigator ->
             navigator.addDecorationListener("highlights", decorationListener)
 
-            model.highlightDecorations
-                .onEach { navigator.applyDecorations(it, "highlights") }
-                .launchIn(viewScope)
+            model.decorableNavigator = navigator
+//            model.highlightDecorations
+//                .onEach { navigator.applyDecorations(it, "highlights") }
+//                .launchIn(viewScope)
+
+//            model.getHighlights().observe(viewLifecycleOwner, {
+//                println()
+//            })
 
             model.searchDecorations
                 .onEach { navigator.applyDecorations(it, "search") }
@@ -134,8 +139,8 @@ abstract class BaseReaderFragment : Fragment() {
             val decoration = event.decoration
             // We stored the highlight's database ID in the `Decoration.extras` bundle, for
             // easy retrieval. You can store arbitrary information in the bundle.
-            val id = decoration.extras.getLong("id")
-                .takeIf { it > 0 } ?: return false
+            val id = decoration.extras.getString("id")
+                .takeIf { it != null } ?: return false
 
             // This listener will be called when tapping on any of the decorations in the
             // "highlights" group. To differentiate between the page margin icon and the
@@ -205,7 +210,7 @@ abstract class BaseReaderFragment : Fragment() {
         }
     }
 
-    private fun showHighlightPopup(rect: RectF, style: Highlight.Style, highlightId: Long? = null)
+    private fun showHighlightPopup(rect: RectF, style: Highlight.Style, highlightId: String? = null)
         = viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             if (popupWindow?.isShowing == true) return@launchWhenResumed
 
@@ -272,7 +277,7 @@ abstract class BaseReaderFragment : Fragment() {
             }
         }
 
-        private fun selectHighlightTint(highlightId: Long? = null, style: Highlight.Style, @ColorInt tint: Int)
+        private fun selectHighlightTint(highlightId: String? = null, style: Highlight.Style, @ColorInt tint: Int)
             = viewLifecycleOwner.lifecycleScope.launchWhenResumed {
                 if (highlightId != null) {
                     model.updateHighlightStyle(highlightId, style, tint)
@@ -289,7 +294,7 @@ abstract class BaseReaderFragment : Fragment() {
                 mode?.finish()
             }
 
-    private fun showAnnotationPopup(highlightId: Long? = null) = viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+    private fun showAnnotationPopup(highlightId: String? = null) = viewLifecycleOwner.lifecycleScope.launchWhenResumed {
         val activity = activity ?: return@launchWhenResumed
         val view = layoutInflater.inflate(R.layout.popup_note, null, false)
         val note = view.findViewById<EditText>(R.id.note)
