@@ -91,6 +91,7 @@ class EpubReaderFragment : VisualReaderFragment(), EpubNavigatorFragment.Listene
                 config = EpubNavigatorFragment.Configuration().apply {
                     // Register the HTML template for our custom [DecorationStyleAnnotationMark].
                     decorationTemplates[DecorationStyleAnnotationMark::class] = annotationMarkTemplate(activity)
+                    selectionActionModeCallback = customSelectionActionModeCallback
                 }
             )
 
@@ -236,9 +237,8 @@ class EpubReaderFragment : VisualReaderFragment(), EpubNavigatorFragment.Listene
             model.cancelSearch()
             menuSearchView.setQuery("", false)
 
-            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.toggleSoftInput(
-                InputMethodManager.SHOW_FORCED,
-                InputMethodManager.HIDE_IMPLICIT_ONLY
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
+                this.view, InputMethodManager.SHOW_FORCED
             )
         }
     }
